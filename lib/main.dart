@@ -28,7 +28,7 @@ class MyAppState extends State<MyApp> {
       theme: ThemeData(primaryColor: Colors.cyanAccent),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Leauge'),
+          title: Text('League'),
         ),
         body: _pageOptions[_selectedPage],
         bottomNavigationBar: BottomNavigationBar(
