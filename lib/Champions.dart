@@ -68,7 +68,7 @@ class _ChampionsState extends State<Champions> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               new Image.network(
-                                'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/'+champions.data[key].name+'_0.jpg',
+                                'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/'+champions.data[key].id+'_0.jpg',
                                 //trzeba dodac obsluge znakow specjalnych i spacji
                               ),
                               new Padding(
