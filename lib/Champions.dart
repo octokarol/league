@@ -1,12 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:league/ChampionsFromJson.dart';
 import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
 import 'package:loading/loading.dart';
-import 'package:league/ChampionsFromJson.dart';
+
 import './ChampionDetails.dart';
-import 'package:http/http.dart' as http;
 
 var jsonSnapshot; //trzeba zmienic ta zmienna globalna np w jakas klase ze static - chcialem tylko zobaczyc czy dziala
 enum WhichChampionDisplay { all, roster }
@@ -25,22 +22,8 @@ class _ChampionsState extends State<Champions> {
   void initState() {
     setState(() {});
   }
-/*
-  Future<String> fetchRoster() async {
-    final response = await http.get(
-        'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-5dcf5863-1239-4eb1-b276-3917e226e81e');
-    Map<String, dynamic> rosterMap;
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      return Future.delayed(Duration(seconds: 1), () => response.body);
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load roster');
-    }
-  }
-*/
+
+
   @override
   Widget build(BuildContext context){
     if (jsonSnapshot.connectionState == ConnectionState.done) {
