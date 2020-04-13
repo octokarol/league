@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -49,7 +48,7 @@ class MyAppState extends State<MyApp> {
                   BottomNavigationBarItem(
                       icon: Icon(Icons.home), title: Text("strona główna")),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.list), title: Text("rotacja")),
+                      icon: Icon(Icons.list), title: Text("champions")),
                   BottomNavigationBarItem(
                       icon: Icon(Icons.settings), title: Text("ustawienia")),
                 ],
