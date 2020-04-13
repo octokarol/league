@@ -4,19 +4,25 @@ import 'package:flutter/material.dart';
 // ignore: must_be_immutable
 class ChampionDetails extends StatelessWidget {
 
-  //ChampionDetails(this.championName);
+  var championDetailsData;
+
+  ChampionDetails(this.championDetailsData);
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("tytul"),
+        title: Text(championDetailsData.name),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Text("guwno"),
-      ),
+      body: ListView.builder(
+        itemCount: championDetailsData.stats.length,
+        itemBuilder: (context, index) {
+          String key = championDetailsData.stats.keys.elementAt(index);
+          return Text(
+              key+": "+championDetailsData.stats[key].toString()
+          );
+        }),
     );
   }
-
 }
