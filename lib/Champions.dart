@@ -1,11 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:league/ChampionsFromJson.dart';
 import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
 import 'package:loading/loading.dart';
-
+import 'package:league/ChampionsFromJson.dart';
 import './ChampionDetails.dart';
 
-var jsonSnapshot; //trzeba zmienic ta zmienna globalna np w jakas klase ze static - chcialem tylko zobaczyc czy dziala
+class JsonData {
+  static var jsonSnapshot;
+  static var allChampions;
+  static var rosterChampions;
+}
+
 enum WhichChampionDisplay { all, roster }
 WhichChampionDisplay currentFilter = WhichChampionDisplay.all;
 
@@ -17,22 +24,36 @@ class Champions extends StatefulWidget {
 }
 
 class _ChampionsState extends State<Champions> {
+  var championsJsonString ;
+  var champions;
+  double radioButtonsContainerHeight; //w przyszlosci moze jakis kontruktor ktory "zapamietuje" preferencje
+  var championsListLength;
   @override
   // ignore: must_call_super
   void initState() {
     setState(() {});
   }
 
-
   @override
-  Widget build(BuildContext context){
-    if (jsonSnapshot.connectionState == ConnectionState.done) {
-      var championsJsonString = jsonSnapshot.data.toString();
-      final champions = championsFromJson(championsJsonString);
-      double radioButtonsContainerHeight = 50;
-      var championsListLength = champions.data.length;
-      if (currentFilter == WhichChampionDisplay.roster) {
-
+  Widget build(BuildContext context) {
+    if (JsonData.jsonSnapshot.connectionState == ConnectionState.done) {
+      championsJsonString = JsonData.allChampions;
+      champions = championsFromJson(championsJsonString);
+      radioButtonsContainerHeight = 50;
+      championsListLength = champions.data.length;
+      if (currentFilter == WhichChampionDisplay.roster) { //obsluga rotacji
+        var rosterMap = jsonDecode(JsonData.rosterChampions);
+        championsListLength = rosterMap["freeChampionIds"].length;
+        Map<String, Datum> tempChampMap = new Map<String, Datum>();
+        champions.data.forEach((k,v) =>{
+          //spradzam ktorzy czempioni z json ze wszystkimi sa w rotacji - porownuje pola key i usuwam te ktore nie jest w rotacji
+          //musi byc zmienna tymczasowa, nie mozna edytowac podczas foreach
+          if(rosterMap["freeChampionIds"].contains(int.parse(v.key)))
+            {
+              tempChampMap[k]=v
+            }
+        });
+        champions.data=tempChampMap;
       }
       return new Stack(
         /*w stack najpierw musi byc lista potem radio buttons
@@ -45,7 +66,6 @@ class _ChampionsState extends State<Champions> {
                   itemCount: championsListLength,
                   itemBuilder: (context, index) {
                     String key = champions.data.keys.elementAt(index);
-
                     return Padding(
                       padding: new EdgeInsets.symmetric(
                           vertical: 5.0, horizontal: 5.0),
@@ -144,7 +164,7 @@ class _ChampionsState extends State<Champions> {
       );
     } else {
       return Scaffold(
-          body: Center(
+        body: Center(
           child: Loading(
               indicator: BallSpinFadeLoaderIndicator(),
               size: 100.0,
