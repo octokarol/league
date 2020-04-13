@@ -1,17 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-
+import "./JsonData.dart";
 import 'package:flutter/material.dart';
 import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:league/ChampionsFromJson.dart';
 import './ChampionDetails.dart';
 
-class JsonData {
-  static var jsonSnapshot;
-  static var allChampions;
-  static var rosterChampions;
-}
+
 
 enum WhichChampionDisplay { all, roster }
 WhichChampionDisplay currentFilter = WhichChampionDisplay.all;
@@ -37,12 +33,12 @@ class _ChampionsState extends State<Champions> {
   @override
   Widget build(BuildContext context) {
     if (JsonData.jsonSnapshot.connectionState == ConnectionState.done) {
-      championsJsonString = JsonData.allChampions;
+      championsJsonString = JsonData.allChampionsString;
       champions = championsFromJson(championsJsonString);
       radioButtonsContainerHeight = 50;
       championsListLength = champions.data.length;
       if (currentFilter == WhichChampionDisplay.roster) { //obsluga rotacji
-        var rosterMap = jsonDecode(JsonData.rosterChampions);
+        var rosterMap = jsonDecode(JsonData.rosterChampionsString);
         championsListLength = rosterMap["freeChampionIds"].length;
         Map<String, Datum> tempChampMap = new Map<String, Datum>();
         champions.data.forEach((k,v) =>{

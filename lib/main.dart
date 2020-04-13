@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import './Champions.dart';
 import './MainPage.dart';
 import './Settings.dart';
+import "./JsonData.dart";
+
 import 'package:http/http.dart' as http;
 
 
@@ -109,8 +111,8 @@ class MyAppState extends State<MyApp> {
         builder: (context, snapshot) {
           JsonData.jsonSnapshot = snapshot;
           if (snapshot.hasData) {
-            JsonData.allChampions = snapshot.data["allChampions"];
-            JsonData.rosterChampions = snapshot.data["rosterChampions"];
+            JsonData.allChampionsString = snapshot.data["allChampions"];
+            JsonData.rosterChampionsString = snapshot.data["rosterChampions"];
           }
 
           return MaterialApp(

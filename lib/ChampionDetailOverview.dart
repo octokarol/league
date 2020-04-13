@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "./JsonData.dart";
 
 class ChampionDetailOverview extends StatelessWidget {
   @override
