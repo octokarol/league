@@ -1,25 +1,19 @@
-import 'package:flutter/material.dart';
-import 'package:loading/indicator/ball_beat_indicator.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
-import 'package:loading/loading.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:flutter/services.dart';
-import 'package:league/ChampionsFromJson.dart';
-import 'dart:io';
-import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:league/ChampionsFromJson.dart';
+import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
+import 'package:loading/loading.dart';
 
+import './ChampionDetails.dart';
+import "./JsonData.dart";
+
+
+
+enum WhichChampionDisplay { all, roster }
+WhichChampionDisplay currentFilter = WhichChampionDisplay.all;
 
 class Champions extends StatefulWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(25.0),
-      child: Text('ustawienia', style: TextStyle(fontSize: 36.0)),
-    );
-  }
-
   @override
   State<StatefulWidget> createState() {
     return _ChampionsState();
@@ -27,30 +21,46 @@ class Champions extends StatefulWidget {
 }
 
 class _ChampionsState extends State<Champions> {
-  var champsJsonClass;
-
+  var championsJsonString ;
+  var champions;
+  double radioButtonsContainerHeight; //w przyszlosci moze jakis kontruktor ktory "zapamietuje" preferencje
+  var championsListLength;
   @override
   // ignore: must_call_super
   void initState() {
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(//trzeba przeniesc logike ladowania jsona do main w async - po co ladowac pare razy to samo
-        future: DefaultAssetBundle  //DefaultAssetBundle mozna zmienic na swoja jakas funkcje
-            .of(context)
-            .loadString('json/champions.json'),
-        builder: (context, snapshot) {
-          // Decode the JSON
-          var championsJsonString = snapshot.data.toString();
-          if (snapshot.connectionState==ConnectionState.done)
+    if (JsonData.jsonSnapshot.connectionState == ConnectionState.done) {
+      championsJsonString = JsonData.allChampionsString;
+      champions = championsFromJson(championsJsonString);
+      radioButtonsContainerHeight = 50;
+      championsListLength = champions.data.length;
+      if (currentFilter == WhichChampionDisplay.roster) { //obsluga rotacji
+        var rosterMap = jsonDecode(JsonData.rosterChampionsString);
+        championsListLength = rosterMap["freeChampionIds"].length;
+        Map<String, Datum> tempChampMap = new Map<String, Datum>();
+        champions.data.forEach((k,v) =>{
+          //spradzam ktorzy czempioni z json ze wszystkimi sa w rotacji - porownuje pola key i usuwam te ktore nie jest w rotacji
+          //musi byc zmienna tymczasowa, nie mozna edytowac podczas foreach
+          if(rosterMap["freeChampionIds"].contains(int.parse(v.key)))
             {
-              final champions = championsFromJson(championsJsonString);
-              return ListView.builder(
-                  itemCount: champions.data.length,
+              tempChampMap[k]=v
+            }
+        });
+        champions.data=tempChampMap;
+      }
+      return new Stack(
+        /*w stack najpierw musi byc lista potem radio buttons
+                bo dziala to jak stos - jedno najpierw, nastepne przykrywa*/
+        children: <Widget>[
+          new Container(
+              //kontenery w obu widgetach ustawiaja wysokosc elementu fixed
+              margin: EdgeInsets.only(top: radioButtonsContainerHeight),
+              child: new ListView.builder(
+                  itemCount: championsListLength,
                   itemBuilder: (context, index) {
                     String key = champions.data.keys.elementAt(index);
                     return Padding(
@@ -60,16 +70,28 @@ class _ChampionsState extends State<Champions> {
                         semanticContainer: true,
                         child: InkWell(
                           onTap: () {
+                            /*
                             Scaffold.of(context).showSnackBar(
                                 SnackBar(content: Text("tego jeszcze nie mamy"),));
+                            */
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ChampionDetails(champions.data[key]),
+                                ));
                           },
                           child: new Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              new Image.network(
-                                'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/'+champions.data[key].id+'_0.jpg',
-                                //trzeba dodac obsluge znakow specjalnych i spacji
+                              Hero(
+                                tag: champions.data[key].id,
+                                child: new Image.network(
+                                  'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/' +
+                                      champions.data[key].id +
+                                      '_0.jpg',
+                                ),
                               ),
                               new Padding(
                                 padding: new EdgeInsets.all(5.0),
@@ -79,19 +101,17 @@ class _ChampionsState extends State<Champions> {
                                   children: <Widget>[
                                     new Text(
                                       champions.data[key].name,
-                                      style: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .title,
+                                      style: Theme.of(context).textTheme.title,
                                     ),
                                     new SizedBox(
                                       height: 3.0,
                                     ),
                                     new Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        new Text("${champions.data[key].title}"),
+                                        new Text(
+                                            "${champions.data[key].title}"),
                                         //new Text("linia: ${champions.data[index].lore}"),
                                       ],
                                     )
@@ -103,20 +123,55 @@ class _ChampionsState extends State<Champions> {
                         ),
                       ),
                     );
-                  });
-            }
-          else
-            {
-              return new Scaffold(
-                  body: Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: Loading(indicator: BallSpinFadeLoaderIndicator(), size: 100.0,color: Colors.grey),
-                      //trzeba zakonczyc jakos animacje ladowania - w konsoli errory
-                    ),
-                  )
-              );
-            }
-        });
+                  })),
+          new Positioned.fill(
+              //pozycjonowanie radio buttons
+              child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                      height: radioButtonsContainerHeight,
+                      child: new Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            new Radio(
+                              value: WhichChampionDisplay.all,
+                              groupValue: currentFilter,
+                              onChanged: (WhichChampionDisplay value) {
+                                setState(() {
+                                  currentFilter = value;
+                                });
+                              },
+                            ),
+                            new Text(
+                              'Wszyscy',
+                              style: new TextStyle(fontSize: 16.0),
+                            ),
+                            new Radio(
+                              value: WhichChampionDisplay.roster,
+                              groupValue: currentFilter,
+                              onChanged: (WhichChampionDisplay value) {
+                                setState(() {
+                                  currentFilter = value;
+                                });
+                              },
+                            ),
+                            new Text(
+                              "Rotacja",
+                              style: new TextStyle(fontSize: 16.0),
+                            )
+                          ])))),
+        ],
+      );
+    } else {
+      return Scaffold(
+        body: Center(
+          child: Loading(
+              indicator: BallSpinFadeLoaderIndicator(),
+              size: 100.0,
+              color: Colors.grey),
+          //trzeba zakonczyc jakos animacje ladowania - w konsoli errory
+        ),
+      );
+    }
   }
 }
