@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import "./JsonData.dart";
 
 class ChampionDetailStatistics extends StatelessWidget {
+  var championDetailsData;
+
+  ChampionDetailStatistics(this.championDetailsData);
+
   @override
   Widget build(BuildContext context) {
     return Container(

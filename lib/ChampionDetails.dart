@@ -10,14 +10,15 @@ class ChampionDetails extends StatelessWidget {
   var championDetailsData;
   ChampionDetails(this.championDetailsData);
 
-  List<Widget> containers = [
-    ChampionDetailOverview(),
-    ChampionDetailStatistics(),
-    ChampionDetailItems()
-  ];
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> containers = [
+      ChampionDetailOverview(championDetailsData),
+      ChampionDetailStatistics(championDetailsData),
+      ChampionDetailItems(championDetailsData)
+    ];
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
