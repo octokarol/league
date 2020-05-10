@@ -54,7 +54,7 @@ class MyAppState extends State<MyApp> {
   Future<Map<String, dynamic>> mapSnapshot;
   Future<String> fetchRoster() async {
     final response = await http.get(
-        'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-5dcf5863-1239-4eb1-b276-3917e226e81e');
+        'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-902ddc85-6f34-48d3-8f14-f8c5c2df7dae');
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
