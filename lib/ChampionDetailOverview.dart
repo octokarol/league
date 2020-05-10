@@ -18,10 +18,9 @@ class ChampionDetailOverview extends StatelessWidget {
                   '_0.jpg',
             ),
           ),
-          Padding(
-            padding: new EdgeInsets.all(10.0),
-          ),
-          Text(championDetailsData.blurb)
+          Container(
+              padding: EdgeInsets.all(10.0),
+              child: Text(championDetailsData.blurb)),
         ],
       ),
     );
