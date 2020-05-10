@@ -6,6 +6,7 @@ import './Champions.dart';
 import "./JsonData.dart";
 import './MainPage.dart';
 import './Settings.dart';
+
 import 'DarkThemeProvider.dart';
 import 'Styles.dart';
 
@@ -52,24 +53,9 @@ class MyAppState extends State<MyApp> {
   String titleIndex2 = "Ustawienia";
 
   Future<Map<String, dynamic>> mapSnapshot;
-  /*
-  Future<String> fetchRoster() async {
-    final response = await http.get(
-        'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-f3337aa5-af3f-4ade-89f9-245fd35d4eca');
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      return response.body;
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load roster');
-    }
-  }
-  */
 
 
-  Future<String> fetchAllChampions() async {
+  Future<String> fetchAllChampions() async {  //to w przyszlosci jesli bedziemy chcieli z lokalnego pliku json
     return await DefaultAssetBundle.of(context)
         .loadString('json/champions.json');
   }
@@ -80,11 +66,14 @@ class MyAppState extends State<MyApp> {
         //czytam na razie tylko z neta - mialem problem z lokalnym plikien, wyjatek bez neta pozniej
         'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-f3337aa5-af3f-4ade-89f9-245fd35d4eca'); //co jakis czas trzeba regenerowac link
     final responseAllChampions = await http.get(
-        'http://ddragon.leagueoflegends.com/cdn/10.7.1/data/en_US/champion.json');
+        'http://ddragon.leagueoflegends.com/cdn/10.9.1/data/en_US/champion.json');
+    final responseItems = await http.get(
+        'http://http://ddragon.leagueoflegends.com/cdn/10.9.1/data/en_US/item.json');
     if (responseAllChampions.statusCode == 200 &&
-        responseRoster.statusCode == 200) {
+        responseRoster.statusCode == 200&&responseItems.statusCode==200) {
       jsonMap["rosterChampions"] = responseRoster.body;
       jsonMap["allChampions"] = responseAllChampions.body;
+      jsonMap["items"] = responseItems.body;
       return Future<Map<String, dynamic>>.delayed(
           Duration(milliseconds: 100), () => jsonMap);
     } else {
@@ -129,6 +118,7 @@ class MyAppState extends State<MyApp> {
                   JsonData.allChampionsString = snapshot.data["allChampions"];
                   JsonData.rosterChampionsString =
                   snapshot.data["rosterChampions"];
+                  JsonData.itemsJsonString=snapshot.data["items"];
                 }
 
                 return MaterialApp(
