@@ -62,9 +62,7 @@ class MyAppState extends State<MyApp> {
 
   Future<Map<String, dynamic>> loadJsonSnapshots() async {
     Map<String, dynamic> jsonMap = new Map<String, dynamic>();
-    final responseRoster = await http.get(
-        //czytam na razie tylko z neta - mialem problem z lokalnym plikien, wyjatek bez neta pozniej
-        'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-902ddc85-6f34-48d3-8f14-f8c5c2df7dae'); //co jakis czas trzeba regenerowac link
+    final responseRoster = await http.get('https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-902ddc85-6f34-48d3-8f14-f8c5c2df7dae'); //co jakis czas trzeba regenerowac link
     final responseAllChampions = await http.get(
         'http://ddragon.leagueoflegends.com/cdn/10.9.1/data/en_US/champion.json');
     final responseItems = await http.get(
