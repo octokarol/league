@@ -17,7 +17,7 @@ class ChampionDetailStatistics extends StatelessWidget {
         DataRow(cells: [
           DataCell(Row(
             children: <Widget>[
-              Image(image: AssetImage('ahri.jpg')),
+              //Image(image: AssetImage('Health_icon.png')),
               Text("  Zdrowie"),
             ],
           )),
