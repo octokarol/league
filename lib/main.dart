@@ -64,16 +64,18 @@ class MyAppState extends State<MyApp> {
     Map<String, dynamic> jsonMap = new Map<String, dynamic>();
     final responseRoster = await http.get(
         //czytam na razie tylko z neta - mialem problem z lokalnym plikien, wyjatek bez neta pozniej
-        'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-f3337aa5-af3f-4ade-89f9-245fd35d4eca'); //co jakis czas trzeba regenerowac link
+        'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-902ddc85-6f34-48d3-8f14-f8c5c2df7dae'); //co jakis czas trzeba regenerowac link
     final responseAllChampions = await http.get(
         'http://ddragon.leagueoflegends.com/cdn/10.9.1/data/en_US/champion.json');
+    /*
     final responseItems = await http.get(
         'http://http://ddragon.leagueoflegends.com/cdn/10.9.1/data/en_US/item.json');
+        */
     if (responseAllChampions.statusCode == 200 &&
-        responseRoster.statusCode == 200&&responseItems.statusCode==200) {
+        responseRoster.statusCode == 200) {
       jsonMap["rosterChampions"] = responseRoster.body;
       jsonMap["allChampions"] = responseAllChampions.body;
-      jsonMap["items"] = responseItems.body;
+      //jsonMap["items"] = responseItems.body;
       return Future<Map<String, dynamic>>.delayed(
           Duration(milliseconds: 100), () => jsonMap);
     } else {
@@ -118,7 +120,7 @@ class MyAppState extends State<MyApp> {
                   JsonData.allChampionsString = snapshot.data["allChampions"];
                   JsonData.rosterChampionsString =
                   snapshot.data["rosterChampions"];
-                  JsonData.itemsJsonString=snapshot.data["items"];
+                  //JsonData.itemsJsonString=snapshot.data["items"];
                 }
 
                 return MaterialApp(
