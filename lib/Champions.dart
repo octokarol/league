@@ -70,10 +70,6 @@ class _ChampionsState extends State<Champions> {
                         semanticContainer: true,
                         child: InkWell(
                           onTap: () {
-                            /*
-                            Scaffold.of(context).showSnackBar(
-                                SnackBar(content: Text("tego jeszcze nie mamy"),));
-                            */
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -112,7 +108,6 @@ class _ChampionsState extends State<Champions> {
                                       children: <Widget>[
                                         new Text(
                                             "${champions.data[key].title}"),
-                                        //new Text("linia: ${champions.data[index].lore}"),
                                       ],
                                     )
                                   ],
