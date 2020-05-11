@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:league/ChampionDetailsJsonData.dart';
 
-import 'ChampionDetailItems.dart';
+import 'ChampionDetailSpells.dart';
 import 'ChampionDetailOverview.dart';
 import 'ChampionDetailStatistics.dart';
 import 'ChampionsFromJson.dart';
@@ -33,6 +33,16 @@ class ChampionDetails extends StatelessWidget {
     }
   }
 
+var spellsList;
+void updateSpellInformation(){
+  if (JsonData.championDetailsClass != null) {
+    spellsList = JsonData.championDetailsClass.data.champion.spells;
+  }
+  
+}
+
+
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -41,12 +51,14 @@ class ChampionDetails extends StatelessWidget {
           if (snapshot.hasData) {
             JsonData.championDetailsClass = championDetailsJsonDataFromJson(
                 snapshot.data["championDetails"], championBasicData.id);
+                updateSpellInformation();    
           }
           List<Widget> containers = [
             ChampionDetailOverview(championBasicData),
             ChampionDetailStatistics(championBasicData),
-            ChampionDetailItems(championBasicData)
+            ChampionDetailSpells(championBasicData, spellsList)
           ];
+
           return DefaultTabController(
             length: 3,
             child: Scaffold(
@@ -63,7 +75,7 @@ class ChampionDetails extends StatelessWidget {
                       icon: Icon(Icons.list),
                     ),
                     Tab(
-                      text: 'przedmioty',
+                      text: 'umiejętności',
                       icon: Icon(Icons.grain),
                     ),
                   ],
