@@ -1,10 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:league/ChampionsFromJson.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
-import 'package:loading/loading.dart';
-
 import './ChampionDetails.dart';
 import "./JsonData.dart";
 
@@ -160,11 +156,7 @@ class _ChampionsState extends State<Champions> {
     } else {
       return Scaffold(
         body: Center(
-          child: Loading(
-              indicator: BallSpinFadeLoaderIndicator(),
-              size: 100.0,
-              color: Colors.grey),
-          //trzeba zakonczyc jakos animacje ladowania - w konsoli errory
+          child: CircularProgressIndicator()
         ),
       );
     }
