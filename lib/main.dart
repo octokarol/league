@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -84,7 +86,7 @@ class MyAppState extends State<MyApp> {
     if (responseAllChampions.statusCode == 200 &&
         responseRoster.statusCode == 200) {
       jsonMap["rosterChampions"] = responseRoster.body;
-      jsonMap["allChampions"] = responseAllChampions.body;
+      jsonMap["allChampions"] = utf8.decode(responseAllChampions.bodyBytes);
       //jsonMap["items"] = responseItems.body;
       return Future<Map<String, dynamic>>.delayed(
           Duration(milliseconds: 100), () => jsonMap);
