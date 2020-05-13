@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-import './Champions.dart';
+import './ChampionsList.dart';
 import "./JsonData.dart";
 import './MainPage.dart';
 import './Settings.dart';
 
+import 'ChampionsFromJson.dart';
 import 'DarkThemeProvider.dart';
 import 'Styles.dart';
 
@@ -104,7 +105,7 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     _pageOptions = [
       MainPage(),
-      Champions(),
+      ChampionsList(),
       Settings()
     ];
     //musi byc tutaj a nie w deklaracji bo inaczej sie wysypuje
@@ -117,7 +118,7 @@ class MyAppState extends State<MyApp> {
               builder: (context, snapshot) {
                 JsonData.jsonSnapshot = snapshot;
                 if (snapshot.hasData) {
-                  JsonData.allChampionsString = snapshot.data["allChampions"];
+                  JsonData.allChampionsInfo = championsFromJson(snapshot.data["allChampions"]);
                   JsonData.rosterChampionsString =
                   snapshot.data["rosterChampions"];
                   //JsonData.itemsJsonString=snapshot.data["items"];
