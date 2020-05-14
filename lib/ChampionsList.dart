@@ -9,15 +9,14 @@ import "./JsonData.dart";
 enum WhichChampionDisplay { all, roster }
 WhichChampionDisplay currentFilter = WhichChampionDisplay.all;
 
-class Champions extends StatefulWidget {
+class ChampionsList extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _ChampionsState();
+    return _ChampionsListState();
   }
 }
 
-class _ChampionsState extends State<Champions> {
-  var championsJsonString ;
+class _ChampionsListState extends State<ChampionsList> {
   var champions;
   double radioButtonsContainerHeight; //w przyszlosci moze jakis kontruktor ktory "zapamietuje" preferencje
   var championsListLength;
@@ -30,8 +29,7 @@ class _ChampionsState extends State<Champions> {
   @override
   Widget build(BuildContext context) {
     if (JsonData.jsonSnapshot.connectionState == ConnectionState.done) {
-      championsJsonString = JsonData.allChampionsString;
-      champions = championsFromJson(championsJsonString);
+      champions = JsonData.allChampionsInfo;
       radioButtonsContainerHeight = 50;
       championsListLength = champions.data.length;
       if (currentFilter == WhichChampionDisplay.roster) { //obsluga rotacji

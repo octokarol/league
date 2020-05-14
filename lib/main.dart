@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-import './Champions.dart';
+import './ChampionsList.dart';
 import "./JsonData.dart";
 import './MainPage.dart';
 import './Settings.dart';
 
+import 'ChampionsFromJson.dart';
 import 'DarkThemeProvider.dart';
 import 'Styles.dart';
 
@@ -55,19 +56,7 @@ class MyAppState extends State<MyApp> {
   String titleIndex2 = "Ustawienia";
 
   Future<Map<String, dynamic>> mapSnapshot;
-  Future<String> fetchRoster() async {
-    final response = await http.get(
-        'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-902ddc85-6f34-48d3-8f14-f8c5c2df7dae');
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      return response.body;
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load roster');
-    }
-  }
+
 
 
 
@@ -80,7 +69,7 @@ class MyAppState extends State<MyApp> {
     Map<String, dynamic> jsonMap = new Map<String, dynamic>();
     final responseRoster = await http.get(
         //czytam na razie tylko z neta - mialem problem z lokalnym plikien, wyjatek bez neta pozniej
-        'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key=RGAPI-902ddc85-6f34-48d3-8f14-f8c5c2df7dae'); //co jakis czas trzeba regenerowac link
+        'https://eun1.api.riotgames.com/lol/platform/v3/champion-rotations?api_key='+JsonData.apiKey); //co jakis czas trzeba regenerowac link
     final responseAllChampions = await http.get(
         'http://ddragon.leagueoflegends.com/cdn/10.9.1/data/en_US/champion.json');
     if (responseAllChampions.statusCode == 200 &&
@@ -116,7 +105,7 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     _pageOptions = [
       MainPage(),
-      Champions(),
+      ChampionsList(),
       Settings()
     ];
     //musi byc tutaj a nie w deklaracji bo inaczej sie wysypuje
@@ -129,7 +118,7 @@ class MyAppState extends State<MyApp> {
               builder: (context, snapshot) {
                 JsonData.jsonSnapshot = snapshot;
                 if (snapshot.hasData) {
-                  JsonData.allChampionsString = snapshot.data["allChampions"];
+                  JsonData.allChampionsInfo = championsFromJson(snapshot.data["allChampions"]);
                   JsonData.rosterChampionsString =
                   snapshot.data["rosterChampions"];
                   //JsonData.itemsJsonString=snapshot.data["items"];
