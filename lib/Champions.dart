@@ -93,7 +93,7 @@ class _ChampionsState extends State<Champions> {
                                   children: <Widget>[
                                     new Text(
                                       champions.data[key].name,
-                                      style: Theme.of(context).textTheme.title,
+                                      style: Theme.of(context).textTheme.headline6,
                                     ),
                                     new SizedBox(
                                       height: 3.0,

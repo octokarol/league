@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:convert' show utf8;
 
 class ChampionDetailOverview extends StatelessWidget {
   var championDetailsData;
