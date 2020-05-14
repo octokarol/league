@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:league/ChampionDetailsJsonData.dart';
-import 'JsonData.dart';
 
 class ChampionDetailStatistics extends StatelessWidget {
   var championDetailsData;
