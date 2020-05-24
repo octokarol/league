@@ -26,8 +26,14 @@ class _ChampionsListState extends State<ChampionsList> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (JsonData.jsonSnapshot.connectionState == ConnectionState.done) {
+  Widget build(BuildContext context) {    
+    if (JsonData.jsonSnapshot.connectionState != ConnectionState.done) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator()
+        ),
+      );
+    } else {
       champions = JsonData.allChampionsInfo;
       radioButtonsContainerHeight = 50;
       championsListLength = champions.data.length;
@@ -149,12 +155,6 @@ class _ChampionsListState extends State<ChampionsList> {
                             )
                           ])))),
         ],
-      );
-    } else {
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator()
-        ),
       );
     }
   }

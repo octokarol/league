@@ -62,7 +62,9 @@ class _MainPageState extends State<MainPage> {
         "?api_key=" +
         JsonData.apiKey;
     var jsonResponse = await http.get(preparedURL);
-    if (jsonResponse.statusCode == 200) {
+    if (jsonResponse.statusCode != 200) {
+      throw Exception('Failed to make connection with api');
+    } else {
       summonerInfo = jsonDecode(utf8.decode(jsonResponse.bodyBytes));
       preparedURL = 'https://' +
           regionsMap[selectedRegion] +
@@ -71,7 +73,9 @@ class _MainPageState extends State<MainPage> {
           '?api_key=' +
           JsonData.apiKey;
       jsonResponse = await http.get(preparedURL);
-      if (jsonResponse.statusCode == 200) {
+      if (jsonResponse.statusCode != 200) {
+        throw Exception('Failed to make connection with api');
+      } else {
         var champions = JsonData.allChampionsInfo;
         summonerMatchHistory = jsonDecode(utf8.decode(jsonResponse.bodyBytes));
         setState(() {
@@ -87,6 +91,7 @@ class _MainPageState extends State<MainPage> {
           );
           summonerInfoRow.add(Text(summonerInfo['name']));
           summonerInfoRow.add(Text(summonerInfo['summonerLevel'].toString()));
+          
           matchHistoryList = new Expanded(
             child: new ListView.builder(
                 shrinkWrap: true,
@@ -98,13 +103,14 @@ class _MainPageState extends State<MainPage> {
                   return new FutureBuilder(
                       future: searchForMatch(match['gameId'].toString()),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done&&snapshot.hasData) {
+                        if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
+                          return CircularProgressIndicator();
+                        } else {
                           matchInfo = snapshot.data;
                           int participantID = 0;
                           for (dynamic participant
                               in matchInfo['participantIdentities']) {
-                            if (participant['player']['accountId'] ==
-                                summonerInfo['accountId']) {
+                            if (participant['player']['accountId'] == summonerInfo['accountId']) {
                               participantID = participant['participantId']-1;
                             }
                           }
@@ -140,18 +146,12 @@ class _MainPageState extends State<MainPage> {
                               ],
                             ),
                           );
-                        } else {
-                          return Text("");
                         }
                       });
                 }),
           );
         });
-      } else {
-        throw Exception('Failed to make connection with api');
       }
-    } else {
-      throw Exception('Failed to make connection with api');
     }
   }
 

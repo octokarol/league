@@ -22,6 +22,7 @@ class Settings extends StatelessWidget {
             ),
             ListTile(
               title: Text("O aplikacji"),
+              trailing: Icon(Icons.arrow_forward),
               subtitle: Text("i jej autorach..."),
               onTap: () {
                 Navigator.push(context,
