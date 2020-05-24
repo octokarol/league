@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:league/ChampionDetailsJsonData.dart';
 
-import 'ChampionDetailSpells.dart';
-import 'ChampionDetailOverview.dart';
-import 'ChampionDetailStatistics.dart';
-import 'ChampionsFromJson.dart';
-import 'JsonData.dart';
+import 'package:league/ChampionDetailTabs/ChampionDetailOverview.dart';
+import 'package:league/ChampionDetailTabs/ChampionDetailSpells.dart';
+import 'package:league/ChampionDetailTabs/ChampionDetailStatistics.dart';
+import 'package:league/Json/ChampionDetailsJsonData.dart';
+import 'package:league/Json/ChampionsFromJson.dart';
+import 'package:league/Json/JsonData.dart';
 
 // ignore: must_be_immutable
 class ChampionDetails extends StatelessWidget {

@@ -1,8 +1,7 @@
-import 'dart:io';
-import 'package:league/JsonData.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:league/Json/JsonData.dart';
+import 'dart:convert';
 
 class MainPage extends StatefulWidget {
   @override
@@ -94,7 +93,6 @@ class _MainPageState extends State<MainPage> {
                 physics: ClampingScrollPhysics(),
                 //itemCount: summonerMatchHistory['matches'].length, //za duzo to sie dlugo laduje
                 itemCount: 20,
-
                 itemBuilder: (context, index) {
                   var match = summonerMatchHistory['matches'][index];
                   return new FutureBuilder(

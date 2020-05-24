@@ -1,17 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
-import './ChampionsList.dart';
-import "./JsonData.dart";
-import './MainPage.dart';
-import './Settings.dart';
-
-import 'ChampionsFromJson.dart';
-import 'DarkThemeProvider.dart';
-import 'Styles.dart';
+import 'package:league/Json/ChampionsFromJson.dart';
+import 'package:league/Json/JsonData.dart';
+import 'package:league/ProviderAndPreferences/DarkThemeProvider.dart';
+import 'package:league/ProviderAndPreferences/Styles.dart';
+import 'package:league/TabBarTabs/ChampionsList.dart';
+import 'package:league/TabBarTabs/MainPage.dart';
+import 'package:league/TabBarTabs/Settings.dart';
 
 void main() => runApp(MyApp());
 

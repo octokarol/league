@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ChampionDetailOverview extends StatelessWidget {
-  var championDetailsData;
 
   ChampionDetailOverview(this.championDetailsData);
+  var championDetailsData;
 
   @override
   Widget build(BuildContext context) {

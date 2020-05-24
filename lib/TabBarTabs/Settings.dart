@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:league/AboutScreen.dart';
 import 'package:provider/provider.dart';
 
-import 'DarkThemeProvider.dart';
+import 'package:league/Screens/AboutScreen.dart';
+import 'package:league/ProviderAndPreferences/DarkThemeProvider.dart';
 
 class Settings extends StatelessWidget {
   @override

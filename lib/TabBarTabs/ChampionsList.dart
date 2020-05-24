@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:league/ChampionsFromJson.dart';
-import './ChampionDetails.dart';
-import "./JsonData.dart";
 
-
+import 'package:league/Json/ChampionsFromJson.dart';
+import 'package:league/Json/JsonData.dart';
+import 'package:league/Screens/ChampionDetails.dart';
 
 enum WhichChampionDisplay { all, roster }
 WhichChampionDisplay currentFilter = WhichChampionDisplay.all;
