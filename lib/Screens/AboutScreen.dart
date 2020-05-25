@@ -8,7 +8,6 @@ class AboutScreen extends StatelessWidget {
           title: Text("O aplikacji"),
         ),
         body: Container(
-          padding: EdgeInsets.all(12.0),
           child: Column(
             children: <Widget>[
               ListTile(

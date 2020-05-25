@@ -10,16 +10,9 @@ class Settings extends StatelessWidget {
     final themeChange = Provider.of<DarkThemeProvider>(context);
 
     return Container(
-        padding: EdgeInsets.all(12.0),
         child: Column(
           children: <Widget>[
-            SwitchListTile(
-              value: themeChange.darkTheme,
-              title: Text("tryb nocny 🌙"),
-              onChanged: (value) {
-                themeChange.darkTheme = value;
-              },
-            ),
+            
             ListTile(
               title: Text("O aplikacji"),
               trailing: Icon(Icons.arrow_forward),
@@ -28,7 +21,14 @@ class Settings extends StatelessWidget {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AboutScreen()));
               },
-            )
+            ),
+            SwitchListTile(
+              value: themeChange.darkTheme,
+              title: Text("tryb nocny 🌙"),
+              onChanged: (value) {
+                themeChange.darkTheme = value;
+              },
+            ),
           ],
         ));
   }
