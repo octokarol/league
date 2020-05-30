@@ -41,8 +41,6 @@ void updateSpellInformation(){
   
 }
 
-
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(

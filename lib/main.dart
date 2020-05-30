@@ -49,7 +49,7 @@ class MyAppState extends State<MyApp> {
   int _selectedPage = 0;
   var _pageOptions = [];
   String _title;
-  String titleIndex0 = "Strona główna";
+  String titleIndex0 = "Szukaj";
   String titleIndex1 = "Postacie";
   String titleIndex2 = "Ustawienia";
 
@@ -140,7 +140,7 @@ class MyAppState extends State<MyApp> {
                       },
                       items: [
                         new BottomNavigationBarItem(
-                            icon: Icon(Icons.home), title: Text(titleIndex0)),
+                            icon: Icon(Icons.search), title: Text(titleIndex0)),
                         new BottomNavigationBarItem(
                             icon: Icon(Icons.list), title: Text(titleIndex1)),
                         new BottomNavigationBarItem(
