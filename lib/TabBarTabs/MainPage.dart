@@ -23,8 +23,12 @@ class _MainPageState extends State<MainPage> {
     return items;
   }
 
-  handleSubmittion(String summonerName){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SummonerDetails(_selectedRegion, summonerName)));
+  handleSubmittion(String summonerName) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                SummonerDetails(_selectedRegion, summonerName)));
   }
 
   updateSelectedRegion(Regions selectedRegion) {
@@ -53,7 +57,9 @@ class _MainPageState extends State<MainPage> {
             TextField(
               controller: _controller,
               decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: IconButton(
+                      onPressed: () => handleSubmittion(_controller.text),
+                      icon: Icon(Icons.search)),
                   suffixIcon: IconButton(
                     onPressed: () => _controller.clear(),
                     icon: Icon(Icons.clear),
@@ -72,10 +78,10 @@ class _MainPageState extends State<MainPage> {
                 SizedBox(width: 10.0),
                 DropdownButtonHideUnderline(
                   child: DropdownButton(
-                      items: _dropdownMenuItems,
-                      onChanged: updateSelectedRegion,
-                      value: _selectedRegion,
-                      ),
+                    items: _dropdownMenuItems,
+                    onChanged: updateSelectedRegion,
+                    value: _selectedRegion,
+                  ),
                 )
               ],
             ),

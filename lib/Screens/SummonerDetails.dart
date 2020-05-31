@@ -18,20 +18,29 @@ class SummonerDetails extends StatefulWidget {
 }
 
 class _SummonerDetailsState extends State<SummonerDetails> {
-
   Map<String, dynamic> summonerInfo = new Map<String, dynamic>();
   Map<String, dynamic> summonerMatchHistory = new Map<String, dynamic>();
   Map<String, dynamic> matchInfo = new Map<String, dynamic>();
 
-   Future searchForSummoner() async {
+  Future searchForSummoner() async {
     var summonerName = widget.summonerName.replaceAll(" ", "%20");
-    var preparedURL = "https://" + widget.selectedRegion + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summonerName + "?api_key=" + JsonData.apiKey;
+    var preparedURL = "https://" +
+        widget.selectedRegion +
+        ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" +
+        summonerName +
+        "?api_key=" +
+        JsonData.apiKey;
     var jsonResponse = await http.get(preparedURL);
     if (jsonResponse.statusCode != 200) {
       throw Exception('Failed to make connection with api');
     } else {
       summonerInfo = jsonDecode(utf8.decode(jsonResponse.bodyBytes));
-      preparedURL = 'https://' + widget.selectedRegion + '.api.riotgames.com/lol/match/v4/matchlists/by-account/' + summonerInfo["accountId"] + '?api_key=' + JsonData.apiKey;
+      preparedURL = 'https://' +
+          widget.selectedRegion +
+          '.api.riotgames.com/lol/match/v4/matchlists/by-account/' +
+          summonerInfo["accountId"] +
+          '?api_key=' +
+          JsonData.apiKey;
       jsonResponse = await http.get(preparedURL);
       if (jsonResponse.statusCode != 200) {
         throw Exception('Failed to make connection with api');
@@ -39,12 +48,17 @@ class _SummonerDetailsState extends State<SummonerDetails> {
         var champions = JsonData.allChampionsInfo;
         summonerMatchHistory = jsonDecode(utf8.decode(jsonResponse.bodyBytes));
       }
-    }    
+    }
     Map<String, dynamic> jsonMap = new Map<String, dynamic>();
     var match = summonerMatchHistory['matches'][0];
-    var preparedURLMatch = "https://" + widget.selectedRegion + ".api.riotgames.com/lol/match/v4/matches/" + match['gameId'].toString() + "?api_key=" +JsonData.apiKey;
+    var preparedURLMatch = "https://" +
+        widget.selectedRegion +
+        ".api.riotgames.com/lol/match/v4/matches/" +
+        match['gameId'].toString() +
+        "?api_key=" +
+        JsonData.apiKey;
     var jsonResponseMatch = await http.get(preparedURLMatch);
-    
+
     if (jsonResponseMatch.statusCode != 200) {
       throw Exception('Failed to make connection with api');
     } else {
@@ -54,26 +68,39 @@ class _SummonerDetailsState extends State<SummonerDetails> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.summonerName),
+          title: Text("Szukaj"),
         ),
         body: Container(
-          child: FutureBuilder(
-            future: searchForSummoner(),
-            builder: (context, snapshot){
-                        if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
-                          return Center(child: CircularProgressIndicator());
-                        } else {
-                            return Text("loaded");
-                        }
-            }
-            ) 
-        ));
+            child: FutureBuilder(
+                future: searchForSummoner(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done ||
+                      !snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    return Container(
+                        child: Column(
+                      children: <Widget>[buildSummonerHeader()],
+                    ));
+                  }
+                })));
   }
 
-
-
+  ListTile buildSummonerHeader() {
+    return ListTile(
+      title: Text(summonerInfo['name']),
+      subtitle: Text(
+          "poziom przywoływacza: " + summonerInfo['summonerLevel'].toString()),
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(
+          'http://ddragon.leagueoflegends.com/cdn/10.9.1/img/profileicon/' +
+              summonerInfo['profileIconId'].toString() +
+              '.png',
+        ),
+        radius: 25.0,
+      ),
+    );
+  }
 }
-
