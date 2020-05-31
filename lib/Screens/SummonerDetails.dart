@@ -23,7 +23,7 @@ class _SummonerDetailsState extends State<SummonerDetails> {
   Map<String, dynamic> summonerMatchHistory = new Map<String, dynamic>();
   Map<String, dynamic> matchInfo = new Map<String, dynamic>();
 
-   searchForSummoner() async {
+   Future searchForSummoner() async {
     var summonerName = widget.summonerName.replaceAll(" ", "%20");
     var preparedURL = "https://" + widget.selectedRegion + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summonerName + "?api_key=" + JsonData.apiKey;
     var jsonResponse = await http.get(preparedURL);
@@ -40,16 +40,16 @@ class _SummonerDetailsState extends State<SummonerDetails> {
         summonerMatchHistory = jsonDecode(utf8.decode(jsonResponse.bodyBytes));
       }
     }    
-    // Map<String, dynamic> jsonMap = new Map<String, dynamic>();
-    // var match = summonerMatchHistory['matches'][0];
-    // var preparedURLMatch = "https://" + widget.selectedRegion + ".api.riotgames.com/lol/match/v4/matches/" + match['gameId'].toString() + "?api_key=" +JsonData.apiKey;
-    // var jsonResponseMatch = await http.get(preparedURLMatch);
+    Map<String, dynamic> jsonMap = new Map<String, dynamic>();
+    var match = summonerMatchHistory['matches'][0];
+    var preparedURLMatch = "https://" + widget.selectedRegion + ".api.riotgames.com/lol/match/v4/matches/" + match['gameId'].toString() + "?api_key=" +JsonData.apiKey;
+    var jsonResponseMatch = await http.get(preparedURLMatch);
     
-    // if (jsonResponseMatch.statusCode != 200) {
-    //   throw Exception('Failed to make connection with api');
-    // } else {
-    //   return jsonDecode(utf8.decode(jsonResponseMatch.bodyBytes));
-    // }
+    if (jsonResponseMatch.statusCode != 200) {
+      throw Exception('Failed to make connection with api');
+    } else {
+      return jsonDecode(utf8.decode(jsonResponseMatch.bodyBytes));
+    }
   }
 
   @override
@@ -62,7 +62,13 @@ class _SummonerDetailsState extends State<SummonerDetails> {
         body: Container(
           child: FutureBuilder(
             future: searchForSummoner(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) ,
+            builder: (context, snapshot){
+                        if (snapshot.connectionState != ConnectionState.done || !snapshot.hasData) {
+                          return Center(child: CircularProgressIndicator());
+                        } else {
+                            return Text("loaded");
+                        }
+            }
             ) 
         ));
   }
