@@ -20,7 +20,7 @@ class SummonerDetails extends StatefulWidget {
 }
 
 class _SummonerDetailsState extends State<SummonerDetails> {
-  static final int numOfMatches = 5;
+  static final int numOfMatches = 20;
 
   List<dynamic> decodedMatches = List<dynamic>();
   Map<String, dynamic> matchInfo = new Map<String, dynamic>();
@@ -54,16 +54,15 @@ class _SummonerDetailsState extends State<SummonerDetails> {
       summonerMatchHistory = jsonDecode(utf8.decode(jsonResponse.bodyBytes));
       return summonerMatchHistory;
     }
-    // Map<String, dynamic> jsonMap = new Map<String, dynamic>();
-    // for (var i = 0; i < numOfMatches; i++) {
-    //   var jsonResponseMatch = await http.get(getMatchURL(i));
-    //   decodedMatches.add(jsonDecode(utf8.decode(jsonResponseMatch.bodyBytes)));
-    // }
-    // return decodedMatches;
   }
 
-  String getMatchURL(int i) {
-    var match = summonerMatchHistory['matches'][i];
+  Future searchForMatch(int matchNumber) async {
+    var jsonResponseMatch = await http.get(getMatchURL(matchNumber));
+    return jsonDecode(utf8.decode(jsonResponseMatch.bodyBytes));
+  }
+
+  String getMatchURL(int matchNumber) {
+    var match = summonerMatchHistory['matches'][matchNumber];
     var preparedURLMatch = "https://" +
         widget.selectedRegion +
         ".api.riotgames.com/lol/match/v4/matches/" +
@@ -108,38 +107,147 @@ class _SummonerDetailsState extends State<SummonerDetails> {
     );
   }
 
+  Card buildMaterialErrorCard() {
+    return new Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 7.0),
+        child: Column(children: <Widget>[
+          new ListTile(
+            leading: Icon(
+              Icons.error,
+              size: 40.0,
+            ),
+            title: Text("Nie można było załadować meczu"),
+            subtitle: Text("prawdopodobnie był on rozgrywany zbyt dawno"),
+          )
+        ]),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text("Szukaj"),
         ),
-        body: Container(
-            child: FutureBuilder(
-                future: searchForSummoner(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done ||
-                      !snapshot.hasData) {
-                    return Center(child: CircularProgressIndicator());
-                  } else {
-                    if (summonerInfo.isEmpty) {
-                      return buildErrorScreen(context);
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+              child: FutureBuilder(
+                  future: searchForSummoner(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done ||
+                        !snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      if (summonerInfo.isEmpty) {
+                        return buildErrorScreen(context);
+                      } else
+                        return Container(
+                            child: Column(
+                          children: <Widget>[
+                            buildSummonerHeader(),
+                            SizedBox(height: 10.0),
+                            Text("historia rozegranych meczy:",
+                                style: Theme.of(context).textTheme.headline5),
+                            SizedBox(height: 10.0),
+                            buildListViewOfMatches()
+                          ],
+                        ));
+                    }
+                  })),
+        ));
+  }
+
+  Expanded buildListViewOfMatches() {
+    return Expanded(
+      child: ListView.builder(
+          itemCount: numOfMatches,
+          itemBuilder: (context, index) {
+            var match;
+            try {
+              match = summonerMatchHistory['matches'][index];
+            } catch (NoSuchMethodError) {
+              return buildMaterialErrorCard();
+            }
+            try {
+              return FutureBuilder(
+                  future: searchForMatch(index),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done ||
+                        !snapshot.hasData) {
+                      return buildLoadingCard();
                     } else
-                      return Container(
-                          child: Column(
-                        children: <Widget>[
-                          buildSummonerHeader(),
-                          SizedBox(height: 10.0),
-                          Text("historia rozegranych meczy:",
-                              style: Theme.of(context).textTheme.headline5),
-                          SizedBox(height: 10.0),
-                          ListView.builder(
-                            itemCount: numOfMatches,
-                            itemBuilder: null,
-                          )
-                        ],
-                      ));
-                  }
-                })));
+                      matchInfo = snapshot.data;
+                    var champions = JsonData.allChampionsInfo;
+                    int participantID = 0;
+
+                    for (dynamic participant
+                        in matchInfo['participantIdentities']) {
+                      if (participant['player']['accountId'] ==
+                          summonerInfo['accountId']) {
+                        participantID = participant['participantId'] - 1;
+                      }
+                    }
+
+                    dynamic stats =
+                        matchInfo['participants'][participantID]['stats'];
+                    String championKey = "";
+                    for (String key in champions.data.keys) {
+                      championKey = match['champion'].toString();
+                      if (match['champion'].toString() ==
+                          champions.data[key].key) {
+                        championKey = key;
+                        break;
+                      }
+                    }
+                    return buildGameCard(championKey, stats);
+                  });
+            } catch (NoSuchErrorMethod) {
+              return buildMaterialErrorCard();
+            }
+          }),
+    );
+  }
+
+  Card buildGameCard(String championKey, stats) {
+    return Card(
+        child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7.0),
+      child: Column(
+        children: <Widget>[
+          new ExpansionTile(
+            leading: Image.network(
+              'http://ddragon.leagueoflegends.com/cdn/10.9.1/img/champion/' +
+                  championKey +
+                  '.png',
+            ),
+            title: Text(stats['kills'].toString() +
+                "/" +
+                stats['deaths'].toString() +
+                "/" +
+                stats["assists"].toString()),
+            subtitle: Text("data"),
+          )
+        ],
+      ),
+    ));
+  }
+
+  Card buildLoadingCard() {
+    return Card(
+        child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 7.0),
+      child: Column(
+        children: <Widget>[
+          new ListTile(
+            leading: CircularProgressIndicator(),
+            title: Text("ładowanie..."),
+            subtitle: Text("..."),
+          )
+        ],
+      ),
+    ));
   }
 }

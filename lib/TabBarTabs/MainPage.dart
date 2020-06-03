@@ -37,6 +37,22 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+    Card buildMaterialErrorCard() {
+    return new Card(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 7.0),
+              child: Column(children: <Widget>[
+                new ExpansionTile(
+                  leading: Icon(Icons.error),
+                  title: Text("Nie można było załadować meczu"),
+                  subtitle: Text("prawdopodobnie był on rozgrywany zbyt dawno"),
+                )
+              ]),
+            ),
+          );
+  }
+
+
   @override
   void initState() {
     super.initState();
