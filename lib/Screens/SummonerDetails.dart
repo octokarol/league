@@ -214,7 +214,7 @@ class _SummonerDetailsState extends State<SummonerDetails> {
 
   Card buildGameCard(String championKey, stats) {
     return Card(
-      color: stats['win'] ? Colors.lightGreen[300] : Colors.red[200], //DO USTALENIA?
+      color: stats['win'] ? Colors.lightGreen[300] : Colors.red[300], //DO USTALENIA?
         child: Padding(
       padding: const EdgeInsets.symmetric(vertical: 7.0),
       child: Column(
