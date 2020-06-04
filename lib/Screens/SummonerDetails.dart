@@ -149,9 +149,9 @@ class _SummonerDetailsState extends State<SummonerDetails> {
                           children: <Widget>[
                             buildSummonerHeader(),
                             SizedBox(height: 10.0),
-                            Text("historia rozegranych meczy:",
-                                style: Theme.of(context).textTheme.headline5),
-                            SizedBox(height: 10.0),
+                            // Text("historia rozegranych meczy:",
+                            //     style: Theme.of(context).textTheme.headline5),
+                            // SizedBox(height: 10.0),
                             buildListViewOfMatches()
                           ],
                         ));
@@ -161,7 +161,8 @@ class _SummonerDetailsState extends State<SummonerDetails> {
   }
 
   Expanded buildListViewOfMatches() {
-    return Expanded(
+    try {
+          return Expanded(
       child: ListView.builder(
           itemCount: numOfMatches,
           itemBuilder: (context, index) {
@@ -171,7 +172,6 @@ class _SummonerDetailsState extends State<SummonerDetails> {
             } catch (NoSuchMethodError) {
               return buildMaterialErrorCard();
             }
-            try {
               return FutureBuilder(
                   future: searchForMatch(index),
                   builder: (context, snapshot) {
@@ -188,6 +188,7 @@ class _SummonerDetailsState extends State<SummonerDetails> {
                       if (participant['player']['accountId'] ==
                           summonerInfo['accountId']) {
                         participantID = participant['participantId'] - 1;
+                        break;
                       }
                     }
 
@@ -202,19 +203,19 @@ class _SummonerDetailsState extends State<SummonerDetails> {
                         break;
                       }
                     }
-                    print(stats.toString());
                     return buildGameCard(championKey, stats);
                   });
-            } catch (NoSuchErrorMethod) {
-              return buildMaterialErrorCard();
-            }
           }),
     );
+
+    } catch (e) {
+      return Expanded(child: buildMaterialErrorCard());
+    }
   }
 
   Card buildGameCard(String championKey, stats) {
     return Card(
-      color: stats['win'] ? Colors.lightGreen[300] : Colors.red[300], //DO USTALENIA?
+      //color: stats['win'] ? Colors.lightGreen[300] : Colors.red[300], //DO USTALENIA?
         child: Padding(
       padding: const EdgeInsets.symmetric(vertical: 7.0),
       child: Column(
@@ -230,7 +231,10 @@ class _SummonerDetailsState extends State<SummonerDetails> {
                 stats['deaths'].toString() +
                 "/" +
                 stats["assists"].toString()),
-            subtitle: Text("data"),
+            subtitle: stats['win'] ? Text("zwycięstwo", style: TextStyle(color: Colors.green),) : Text("porażka", style: TextStyle(color: Colors.red),),
+            children: <Widget>[
+              Text(stats.toString())
+            ],
           )
         ],
       ),
